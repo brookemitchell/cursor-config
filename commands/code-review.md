@@ -1,3 +1,12 @@
+---
+name: code-review
+description: Perform thorough, fair code review that catches real issues and provides constructive feedback
+arguments:
+  - name: target
+    description: The target branch name to compare against (e.g., main, develop), or a GitHub PR URL (e.g., https://github.com/IDEXX/vello-forms/pull/228)
+    required: false
+---
+
 # Code Review
 
 ## Purpose
@@ -245,6 +254,7 @@ For each issue, provide:
 ````
 
 Example:
+
 ```markdown
 ### 🔴 Security: SQL Injection at api/users.js:42
 
@@ -253,17 +263,18 @@ Example:
 **Why it matters**: Attacker can inject malicious SQL to dump or modify database
 
 **Suggested fix**:
+
 ```javascript
 // Before
-db.query(`SELECT * FROM users WHERE id = ${userId}`)
+db.query(`SELECT * FROM users WHERE id = ${userId}`);
 
 // After
-db.query('SELECT * FROM users WHERE id = $1', [userId])
+db.query("SELECT * FROM users WHERE id = $1", [userId]);
 ````
 
 **Why this works**: Parameterized queries prevent SQL injection by separating data from commands
 
-```
+````
 
 ## Verification Before Approving
 
@@ -293,4 +304,34 @@ db.query('SELECT * FROM users WHERE id = $1', [userId])
 - Are vague or subjective
 
 Be the reviewer you'd want on your PRs.
+
+## Parameters
+
+- `target` (optional): The target branch name to compare against (e.g., `main`, `develop`), or a GitHub PR URL (e.g., `https://github.com/IDEXX/vello-forms/pull/228`)
+- If no argument is provided, reviews against the current branch
+
+## Example workflow
+
+```bash
+# Review code against main branch
+/code-review main
+
+# Review code against develop branch
+/code-review develop
+
+# Review code on a specific PR (will post feedback as comments)
+/code-review https://github.com/IDEXX/vello-forms/pull/228
+
+# Review current branch
+/code-review
 ```
+
+## Notes
+
+- If a GitHub PR URL is provided, feedback will be automatically posted as comments on the PR
+- If a branch name is provided, feedback is output for local review
+- If no argument is provided, reviews against the current branch
+- Review feedback follows the Output Format guidelines for consistency and clarity
+- For style-only reviews, use `/style-review` instead
+- Full code review includes: functionality, code quality, security, architecture, and error handling
+````
